@@ -49,6 +49,7 @@ class CupertinoStepper extends StatefulWidget {
     Key? key,
     required this.steps,
     this.physics,
+    this.controller,
     this.type = StepperType.vertical,
     this.currentStep = 0,
     this.onStepTapped,
@@ -71,6 +72,7 @@ class CupertinoStepper extends StatefulWidget {
   /// If the stepper is contained within another scrollable it
   /// can be helpful to set this property to [ClampingScrollPhysics].
   final ScrollPhysics? physics;
+  final ScrollController? controller;
 
   /// The type of stepper that determines the layout. In the case of
   /// [StepperType.horizontal], the content of the current step is displayed
@@ -173,6 +175,12 @@ class _CupertinoStepperState extends State<CupertinoStepper>
 
     for (int i = 0; i < oldWidget.steps.length; i += 1)
       _oldStates[i] = oldWidget.steps[i].state;
+
+    widget.controller?.animateTo(
+      (92 * widget.currentStep).toDouble(),
+      duration: _kThemeAnimationDuration,
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   bool _isFirst(int index) {
@@ -488,6 +496,7 @@ class _CupertinoStepperState extends State<CupertinoStepper>
 
   Widget _buildVertical() {
     return ListView(
+      controller: widget.controller,
       shrinkWrap: true,
       physics: widget.physics,
       children: <Widget>[
@@ -507,14 +516,6 @@ class _CupertinoStepperState extends State<CupertinoStepper>
                   padding: EdgeInsets.zero,
                   onPressed: widget.steps[i].state != StepState.disabled
                       ? () {
-                          // In the vertical case we need to scroll to the newly tapped
-                          // step.
-                          Scrollable.ensureVisible(
-                            _keys[i].currentContext!,
-                            curve: Curves.fastOutSlowIn,
-                            duration: _kThemeAnimationDuration,
-                          );
-
                           if (widget.onStepTapped != null)
                             widget.onStepTapped!(i);
                         }
@@ -530,6 +531,7 @@ class _CupertinoStepperState extends State<CupertinoStepper>
               ),
             ],
           ),
+        SizedBox(height: 300),
       ],
     );
   }
