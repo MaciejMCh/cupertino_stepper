@@ -237,7 +237,7 @@ class _CupertinoStepperState extends State<CupertinoStepper>
           color: isActive
               ? CupertinoDynamicColor.resolve(CupertinoColors.white, context)
               : themeData.primaryColor,
-          size: _kStepFontSize * 2, // ### TODO: why is check_mark so small?
+          size: _kStepFontSize,
         );
       case StepState.error:
         return const Text('!',
